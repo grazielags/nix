@@ -1,4 +1,4 @@
-package com.sctrcd.multidsdemo;
+package nix;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

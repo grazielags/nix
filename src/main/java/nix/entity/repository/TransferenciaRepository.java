@@ -1,9 +1,9 @@
-package com.sctrcd.multidsdemo.transferencia.repo;
+package nix.entity.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.sctrcd.multidsdemo.transferencia.domain.Transferencia;
+import nix.entity.Transferencia;
 
 public interface TransferenciaRepository extends JpaRepository<Transferencia, Long> {
-
+	public Transferencia findById(Integer id);
 }
