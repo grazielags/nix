@@ -3,7 +3,7 @@ package nix.api.dto;
 public class TransferenciaDTO {
 
 	private Integer id;
-    private UsuarioDTO usuario;
+//    private UsuarioDTO usuario;
     private String pagadorNome;
     private String pagadorBanco;
     private String pagadorAgencia;
@@ -22,12 +22,12 @@ public class TransferenciaDTO {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public UsuarioDTO getUsuario() {
-		return usuario;
-	}
-	public void setUsuario(UsuarioDTO usuario) {
-		this.usuario = usuario;
-	}
+//	public UsuarioDTO getUsuario() {
+//		return usuario;
+//	}
+//	public void setUsuario(UsuarioDTO usuario) {
+//		this.usuario = usuario;
+//	}
 	public String getPagadorNome() {
 		return pagadorNome;
 	}

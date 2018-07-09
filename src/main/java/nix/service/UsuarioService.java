@@ -4,11 +4,9 @@ import static java.util.Objects.isNull;
 
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import nix.entity.Usuario;
@@ -20,13 +18,8 @@ public class UsuarioService  {
 	@Autowired
     private UsuarioRepository usuarioRepository;
 	
-	@PersistenceUnit
-    private EntityManagerFactory entityManagerFactory;
-
-    @Autowired(required = true)
-    public UsuarioService(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+	@Autowired
+    private EntityManager entityManagerFactory;
 
     public UsuarioService() {}
 

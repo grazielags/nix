@@ -1,9 +1,11 @@
 package nix.entity.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import nix.entity.Transferencia;
 
-public interface TransferenciaRepository extends JpaRepository<Transferencia, Long> {
+@Repository
+public interface TransferenciaRepository extends CrudRepository<Transferencia, Long> {
 	public Transferencia findById(Integer id);
 }

@@ -1,6 +1,7 @@
 package nix.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,6 +9,7 @@ import nix.api.mapper.UsuarioMapper;
 import nix.service.UsuarioService;
 
 @RestController
+@CrossOrigin(origins="*")
 @RequestMapping("v1/usuarios")
 public class UsuarioAPI {
 

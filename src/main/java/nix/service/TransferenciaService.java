@@ -2,13 +2,15 @@ package nix.service;
 
 import static java.util.Objects.isNull;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.datetime.joda.LocalDateTimeParser;
 import org.springframework.stereotype.Service;
 
 import nix.entity.Transferencia;
@@ -20,13 +22,8 @@ public class TransferenciaService {
 	@Autowired
     private TransferenciaRepository transferenciaRepository;
 	
-	@PersistenceUnit
-    private EntityManagerFactory entityManagerFactory;
-
-    @Autowired(required = true)
-    public TransferenciaService(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+	@Autowired
+    private EntityManager entityManagerFactory;
 
     public TransferenciaService() {}
 
@@ -44,6 +41,17 @@ public class TransferenciaService {
     }
 
     public Transferencia save(Transferencia transferencia) {
+//    	LocalDateTime horarioAtual = new LocalDateTimeParser();
+    	if(transferencia.getPagadorBanco() == transferencia.getBeneficiarioBanco()) {
+    		transferencia.setTipo("CC");
+    	}
+//    	if() {
+//    		transferencia.setTipo("CC");
+//    	}
         return transferenciaRepository.save(transferencia);
+    }
+    
+    public void remove(Long id) {
+        transferenciaRepository.delete(id);
     }
 }
