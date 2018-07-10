@@ -1,6 +1,7 @@
 package nix.api.mapper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class TransferenciaMapper {
 
     public TransferenciaDTO mapToDto(Transferencia transferencia) {
     	TransferenciaDTO transferenciaDTO = new TransferenciaDTO();
+    	transferenciaDTO.setId(transferencia.getId());
 //    	transferenciaDTO.setUsuario(transferencia.getUsuario());
     	transferenciaDTO.setPagadorNome(transferencia.getPagadorNome());
     	transferenciaDTO.setPagadorBanco(transferencia.getPagadorBanco());
@@ -28,8 +30,11 @@ public class TransferenciaMapper {
     	transferenciaDTO.setBeneficiarioAgencia(transferencia.getBeneficiarioAgencia());
     	transferenciaDTO.setBeneficiarioConta(transferencia.getBeneficiarioConta());
     	transferenciaDTO.setValor(transferencia.getValor());
+    	transferenciaDTO.setValorFormatado(transferencia.getValor().toString());
     	transferenciaDTO.setTipo(transferencia.getTipo());
     	transferenciaDTO.setStatus(transferencia.getStatus());
+    	transferenciaDTO.setDataCriacao(transferencia.getDataCriacao() != null ? transferencia.getDataCriacao().getTime() : null);
+    	transferenciaDTO.setExcluido(transferencia.isExcluido());
         return transferenciaDTO;
     }
     
@@ -48,12 +53,12 @@ public class TransferenciaMapper {
     		Transferencia transferencia = new Transferencia();
 			if (transferenciaDTO.getId() != null) {
 				transferencia = this.transferenciaService.getById(transferenciaDTO.getId());
-
 				if (transferencia == null) {
 					transferencia = new Transferencia();
 				}
+			} else {
+				transferencia.setDataCriacao(Calendar.getInstance().getTime());
 			}
-//	    	transferencia.setUsuario(transferenciaDTO.getUsuario());
 	    	transferencia.setPagadorNome(transferenciaDTO.getPagadorNome());
 	    	transferencia.setPagadorBanco(transferenciaDTO.getPagadorBanco());
 	    	transferencia.setPagadorAgencia(transferenciaDTO.getPagadorAgencia());
@@ -64,7 +69,8 @@ public class TransferenciaMapper {
 	    	transferencia.setBeneficiarioConta(transferenciaDTO.getBeneficiarioConta());
 	    	transferencia.setValor(transferenciaDTO.getValor());
 	    	transferencia.setTipo(transferenciaDTO.getTipo());
-	    	transferencia.setStatus(transferencia.getStatus());
+	    	transferencia.setStatus(transferenciaDTO.getStatus());
+	    	transferencia.setExcluido(transferenciaDTO.isExcluido());
 	        return transferencia;
     	}
     	return null;

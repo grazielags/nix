@@ -15,13 +15,11 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { TransactionsComponent } from './transactions/transactions.component';
-import { TransactionComponent } from './transactions/transaction/transaction.component';
-import { TransactionDetailComponent } from './transaction-detail/transaction-detail.component';
-import { MenuComponent } from './transaction-detail/menu/menu.component';
-import { MenuItemComponent } from './transaction-detail/menu-item/menu-item.component';
-import { ReviewsComponent } from './transaction-detail/reviews/reviews.component';
 
-import { NotFoundComponent } from './not-found/not-found.component'
+import { NotFoundComponent } from './not-found/not-found.component';
+import { SearchFilterPipe } from './search-filter.pipe';
+import { MyCurrencyPipe } from './my-currency.pipe';
+import { MyCurrencyFormatterDirective } from './my-currency-formatter.directive'
 
 @NgModule({
   declarations: [
@@ -29,12 +27,10 @@ import { NotFoundComponent } from './not-found/not-found.component'
     HeaderComponent,
     HomeComponent,
     TransactionsComponent,
-    TransactionComponent,
-    TransactionDetailComponent,
-    MenuComponent,
-    MenuItemComponent,
-    ReviewsComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    SearchFilterPipe,
+    MyCurrencyPipe,
+    MyCurrencyFormatterDirective
    ],
   imports: [
     BrowserModule,
@@ -46,7 +42,7 @@ import { NotFoundComponent } from './not-found/not-found.component'
     Ng2BootstrapModule,
     ModalModule.forRoot()
   ],
-  providers: [{provide: LOCALE_ID, useValue: ''}],
+  providers: [{provide: LOCALE_ID, useValue: 'pt-br'}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

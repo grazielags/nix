@@ -1,9 +1,10 @@
 package nix.api.dto;
 
+import java.util.Date;
+
 public class TransferenciaDTO {
 
 	private Integer id;
-//    private UsuarioDTO usuario;
     private String pagadorNome;
     private String pagadorBanco;
     private String pagadorAgencia;
@@ -13,8 +14,11 @@ public class TransferenciaDTO {
     private String beneficiarioAgencia;
     private String beneficiarioConta;
     private Double valor;
+    private String valorFormatado;
     private String tipo;
     private String status;
+    private Long dataCriacao;
+    private boolean excluido;
 
 	public Integer getId() {
 		return id;
@@ -22,12 +26,6 @@ public class TransferenciaDTO {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-//	public UsuarioDTO getUsuario() {
-//		return usuario;
-//	}
-//	public void setUsuario(UsuarioDTO usuario) {
-//		this.usuario = usuario;
-//	}
 	public String getPagadorNome() {
 		return pagadorNome;
 	}
@@ -93,5 +91,23 @@ public class TransferenciaDTO {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public Long getDataCriacao() {
+		return dataCriacao;
+	}
+	public void setDataCriacao(Long dataCriacao) {
+		this.dataCriacao = dataCriacao;
+	}
+	public String getValorFormatado() {
+		return valorFormatado;
+	}
+	public void setValorFormatado(String valorFormatado) {
+		this.valorFormatado = valorFormatado;
+	}
+	public boolean isExcluido() {
+		return excluido;
+	}
+	public void setExcluido(boolean excluido) {
+		this.excluido = excluido;
 	}
 }

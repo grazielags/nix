@@ -1,5 +1,7 @@
 package nix.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +19,6 @@ public class Transferencia {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_transferencia")
     @Column(name="id")
     private Integer id;
-//    private Usuario usuario;
     @Column(name="pagador_nome")
     private String pagadorNome;
     @Column(name="pagador_banco")
@@ -40,6 +41,10 @@ public class Transferencia {
     private String tipo;
     @Column
     private String status;
+    @Column(name="data_criacao")
+    private Date dataCriacao;
+    @Column(name="is_excluido")
+    private boolean excluido;
 	public Integer getId() {
 		return id;
 	}
@@ -111,6 +116,18 @@ public class Transferencia {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public Date getDataCriacao() {
+		return dataCriacao;
+	}
+	public void setDataCriacao(Date dataCriacao) {
+		this.dataCriacao = dataCriacao;
+	}
+	public boolean isExcluido() {
+		return excluido;
+	}
+	public void setExcluido(boolean excluido) {
+		this.excluido = excluido;
 	}
     
 }

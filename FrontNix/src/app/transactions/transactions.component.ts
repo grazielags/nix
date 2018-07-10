@@ -1,3 +1,5 @@
+import { MyCurrencyPipe } from './../my-currency.pipe';
+import { MyCurrencyFormatterDirective } from './../my-currency-formatter.directive';
 import { Component, Input, Output, OnInit, ViewContainerRef, EventEmitter, ViewChild,
   trigger,
   state,
@@ -31,7 +33,7 @@ import {Observable} from 'rxjs/Observable'
         color: #d9534f !important; /* red */
     }`
   ],
-  providers: [TransactionsService, FormBuilder],
+  providers: [TransactionsService, FormBuilder, MyCurrencyPipe],
   templateUrl: './transactions.component.html',
   animations: [
     trigger('flyInOut', [
@@ -63,6 +65,7 @@ export class TransactionsComponent implements OnInit {
   qtdForPage: number;
   qtdTransactions: number;
   isEdit: boolean;
+  searchText: string = "";
 
   index: number = 0;
   @ViewChild('modal')
@@ -76,6 +79,7 @@ export class TransactionsComponent implements OnInit {
   animation: boolean = true;
   keyboard: boolean = true;
   backdrop: string | boolean = true;
+  valorTotalPagina: number = 0;
 
   constructor(private transactionsService: TransactionsService,
               private fb: FormBuilder) {}
@@ -87,6 +91,7 @@ export class TransactionsComponent implements OnInit {
       this.transferencia = new Transferencia();
     } else {
       this.selectedTransferenciaId = transferencia.id;
+      this.transferencia.valorFormatado = new MyCurrencyPipe().transform(this.transferencia.valor);
     }
     this.isEdit = true;
     this.childModal.show();
@@ -99,17 +104,31 @@ export class TransactionsComponent implements OnInit {
     this.childModal.show();
   }
   save() {
-    this.transactionsService.save(this.transferencia)
-        .subscribe(transferencia => this.transferencia = transferencia);
-    this.listTransferencia();
-    this.childModal.hide();
+    this.transferencia.valor = parseFloat(this.transferencia.valorFormatado);
+    if(this.transferencia.id == null) {
+      this.transactionsService.save(this.transferencia)
+        .subscribe(
+          transferencia => {
+            this.transferencia = transferencia;
+            this.listTransferencia();
+            this.childModal.hide();
+          });
+    } else {
+      this.transactionsService.saveEdit(this.transferencia)
+        .subscribe(
+          transferencia => {
+            this.transferencia = transferencia;
+            this.listTransferencia();
+            this.childModal.hide();
+          });
+    }
   }
   cancel() {
     this.childModal.hide();
   }
-  remove(id: number) {
-    this.transactionsService.remove(id);
-    this.listTransferencia();
+  remove(transferencia: Transferencia) {
+    this.transactionsService.remove(transferencia)
+    .subscribe(transferencia => this.listTransferencia());
   }
 
   public hideChildModal(): void {
@@ -117,20 +136,24 @@ export class TransactionsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.qtdForPage = 5;
+    this.qtdForPage = 10;
     this.page = 0;
     this.listTransferencia();
   }
 
   listTransferencia() {
     this.transferenciasPagina = [];
+    this.valorTotalPagina = 0;
     this.transactionsService.transactions()
-      .subscribe(transferencias => this.transferencias = transferencias);
-    this.qtdTransactions = 0;
-    if(this.transferencias != null) {
-      this.qtdTransactions = this.transferencias.length;
-    }
-    this.fillTransaction();
+      .subscribe(
+        transferencias => {
+          this.transferencias = transferencias
+          this.qtdTransactions = 0;
+          if(this.transferencias != null) {
+            this.qtdTransactions = this.transferencias.length;
+          }
+          this.fillTransaction();
+        });
   }
 
   paginar($event: any) {
@@ -139,12 +162,14 @@ export class TransactionsComponent implements OnInit {
   }
 
   fillTransaction() {
-    this.transferencias = [];
     for(let i = (this.page * this.qtdForPage); i< (this.page * this.qtdForPage + this.qtdForPage); i++) {
       if(i >= this.qtdTransactions) {
         break;
       }
-      this.transferenciasPagina.push(this.transferencias[i]);
+      if(this.qtdTransactions > 0) {
+        this.valorTotalPagina = this.valorTotalPagina + this.transferencias[i].valor;
+        this.transferenciasPagina.push(this.transferencias[i]);
+      }
     }
   }
 

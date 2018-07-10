@@ -1,8 +1,5 @@
-import {Usuario} from './user.model'
-
 export class Transferencia {
   id: number
-  usuario: Usuario
   pagadorNome: string
   pagadorBanco: string
   pagadorAgencia: string
@@ -12,6 +9,8 @@ export class Transferencia {
   beneficiarioAgencia: string
   beneficiarioConta: string
   valor: number
+  valorFormatado: string
   tipo: string
   status: string
+  dataCriacao: number
 }

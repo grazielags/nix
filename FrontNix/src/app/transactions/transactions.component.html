@@ -1,20 +1,14 @@
 <div id="main" class="container-fluid" style="margin-top: 50px">
     <div id="top" class="row">
         <div class="col-sm-3">
-            <h2>Itens</h2>
+            <h2>({{qtdTransactions}}) Transações</h2>
         </div>
-        <div class="col-sm-6">
-            <div class="input-group h2">
-                <input name="data[search]" class="form-control" id="search" type="text" placeholder="Pesquisar Itens">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit" [routerLink]="['/transaction']">
-                        <span class="glyphicon glyphicon-search"></span>
-                </button>
-                </span>
+        <div class="col-lg-6">
+            <div class="input-group h2 col-lg-12">
+                <input type="text" [(ngModel)]="searchText" class="form-control input-lg col-lg-12" uppercased placeholder="Pesquisar Itens">
             </div>
         </div>
         <div class="col-sm-3">
-            <!-- <a href="" class="btn btn-primary pull-right h2" (click)="validationModal.open()">Novo Item</a> -->
             <button type="button" class="btn btn-primary pull-right h2" (click)="viewTransferenciaEdit(null)">Novo Item</button>
         </div>
     </div>
@@ -24,32 +18,41 @@
             <table class="table table-striped" cellspacing="0" cellpadding="0" width="80%">
                 <thead>
                     <tr>
-                        <th width="20%">Pagador</th>
-                        <th width="20%">Beneficiário</th>
-                        <th width="20%">Valor</th>
-                        <th width="10%">Tipo</th>
-                        <th width="10%">Status</th>
-                        <th class="actions" width="20%">Ações</th>
+                        <th>Pagador</th>
+                        <th>Beneficiário</th>
+                        <th>Data</th>
+                        <th>Valor</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th class="actions">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let transferencia of transferencias | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
-                        <td width="20%">{{transferencia.pagadorNome}}</td>
-                        <td width="20%">{{transferencia.beneficiarioNome}}</td>
-                        <td width="20%">R${{transferencia.valor}}</td>
-                        <td width="10%">{{transferencia.tipo}}</td>
-                        <td width="10%">{{transferencia.status}}</td>
-                        <td class="actions" width="20%">
+                    <tr *ngFor="let transferencia of transferencias | searchFilter:searchText | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
+                        <td>{{transferencia.pagadorNome}}</td>
+                        <td>{{transferencia.beneficiarioNome}}</td>
+                        <td>{{transferencia.dataCriacao | date: 'dd/MM/yyyy HH:mm'}}</td>
+                        <td>R$ {{transferencia.valor | myCurrency}}</td>
+                        <td>{{transferencia.tipo}}</td>
+                        <td>{{transferencia.status}}</td>
+                        <td class="actions">
                             <a class="btn btn-success btn-xs" (click)="viewTransferenciaDetails(transferencia)">Visualizar</a>
                             <a class="btn btn-warning btn-xs" (click)="viewTransferenciaEdit(transferencia)">Editar</a>
-                            <a class="btn btn-danger btn-xs" data-target="#delete-modal" (click)="remove(transferencia.id)">Excluir</a>
+                            <a class="btn btn-danger btn-xs" (click)="remove(transferencia)">Excluir</a>
                         </td>
                     </tr>
                 </tbody>
-                <tfoot align-items=center>
-                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                <tfoot>
+                    <td>Total:</td>
+                    <td></td>
+                    <td></td>
+                    <td>R$ {{valorTotalPagina | myCurrency}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tfoot>
             </table>
+            <pagination-controls (pageChange)="p = $event"></pagination-controls>
         </div>
     </div>
     <div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -57,9 +60,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" aria-label="Close" (click)="hideChildModal()">
-              <span aria-hidden="true">&times;</span>
-            </button>
-                    <!-- <h4>{{transferencia.title}} details</h4> -->
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form ngNoForm method="post">
@@ -67,19 +69,19 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="control-label">Nome do Pagador</label>
-                                    <input type="text" class="form-control" [(ngModel)]="transferencia.pagadorNome" [disabled]="isEdit == false" />
+                                    <input required maxlength="128" type="text" class="form-control" [(ngModel)]="transferencia.pagadorNome" [disabled]="isEdit == false" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="control-label">Banco do Pagador</label>
-                                    <input type="text" class="form-control" [(ngModel)]="transferencia.pagadorBanco" [disabled]="isEdit == false" />
+                                    <input required maxlength="3" type="text" class="form-control" [(ngModel)]="transferencia.pagadorBanco" [disabled]="isEdit == false" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="control-label">Agência do Pagador</label>
-                                    <input type="text" class="form-control" [(ngModel)]="transferencia.pagadorAgencia" [disabled]="isEdit == false" />
+                                    <input required maxlength="4" type="text" class="form-control" [(ngModel)]="transferencia.pagadorAgencia" [disabled]="isEdit == false" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="control-label">Conta do Pagador</label>
-                                    <input type="text" class="form-control" [(ngModel)]="transferencia.pagadorConta" [disabled]="isEdit == false" />
+                                    <input required maxlength="6" type="text" class="form-control" [(ngModel)]="transferencia.pagadorConta" [disabled]="isEdit == false" />
                                 </div>
                             </div>
                         </div>
@@ -88,36 +90,36 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="control-label">Nome do Beneficiário</label>
-                                    <input type="text" class="form-control" [(ngModel)]="transferencia.beneficiarioNome" [disabled]="isEdit == false" />
+                                    <input required maxlength="128" type="text" class="form-control" [(ngModel)]="transferencia.beneficiarioNome" [disabled]="isEdit == false" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="control-label">Banco do Beneficiário</label>
-                                    <input type="text" class="form-control" [(ngModel)]="transferencia.beneficiarioBanco" [disabled]="isEdit == false" />
+                                    <input required maxlength="3" type="text" class="form-control" [(ngModel)]="transferencia.beneficiarioBanco" [disabled]="isEdit == false" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="control-label">Agência do Beneficiário</label>
-                                    <input type="text" class="form-control" [(ngModel)]="transferencia.beneficiarioAgencia" [disabled]="isEdit == false" />
+                                    <input required maxlength="4" type="text" class="form-control" [(ngModel)]="transferencia.beneficiarioAgencia" [disabled]="isEdit == false" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="control-label">Conta do Beneficiário</label>
-                                    <input type="text" class="form-control" [(ngModel)]="transferencia.beneficiarioConta" [disabled]="isEdit == false" />
+                                    <input required maxlength="6" type="text" class="form-control" [(ngModel)]="transferencia.beneficiarioConta" [disabled]="isEdit == false" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-xs-4">
+                                <div class="col-xs-4" *ngIf="isEdit == false">
                                     <label class="control-label">Tipo da Transferência</label>
                                     <input type="text" class="form-control" [(ngModel)]="transferencia.tipo" [disabled]="isEdit == false" />
                                 </div>
-                                <div class="col-xs-4">
+                                <div class="col-xs-4" *ngIf="isEdit == false">
                                     <label class="control-label">Status da Transferência</label>
                                     <input type="text" class="form-control" [(ngModel)]="transferencia.status" [disabled]="isEdit == false" />
                                 </div>
                                 <div class="col-xs-4">
                                     <label class="control-label">Valor da Tranferência</label>
-                                    <input type="text" class="form-control" [(ngModel)]="transferencia.valor" [disabled]="isEdit == false" />
+                                    <input required type="text" maxlength="17" class="form-control" [(ngModel)]="transferencia.valorFormatado" myCurrencyFormatter [disabled]="isEdit == false" />
                                 </div>
                             </div>
                         </div>
